@@ -7,7 +7,7 @@ class NeonAcademyMemberModel {
   String memberLevel; // A1, A2, C1 gibi harf+sayı yerine çözümüm
   String homeTown; // Memleket
   int age;
-  // ContactInformationModel contact;
+  ContactInformationModel contact;
 
   NeonAcademyMemberModel({
     required this.fullName,
@@ -16,18 +16,18 @@ class NeonAcademyMemberModel {
     required this.memberLevel,
     required this.homeTown,
     required this.age,
-    // required this.contact,
+    required this.contact,
   });
 
   factory NeonAcademyMemberModel.fromMap(Map<String, dynamic> map) {
     return NeonAcademyMemberModel(
-      fullName: map["fullName"] ?? 0,
+      fullName: map["fullName"] ?? "",
       title: map["title"] ?? "",
       horoscope: map["horoscope"] ?? "",
       memberLevel: map["memberLevel"] ?? "",
       homeTown: map["homeTown"] ?? "",
       age: map["age"] ?? 0,
-      // contact: ,
+      contact: ContactInformationModel.fromMap(map["contact"] ?? {}),
     );
   }
 }

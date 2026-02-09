@@ -61,6 +61,8 @@ class _MyAppState extends State<MyApp> {
                           Text('Memleket: ${member.homeTown}'),
                           Text('Burç: ${member.horoscope}'),
                           Text('Düzey: ${member.memberLevel}'),
+                          Text('Email : ${member.contact.email}'),
+                          Text('Telefon : ${member.contact.phoneNumber}'),
                         ],
                       ),
                     ),
