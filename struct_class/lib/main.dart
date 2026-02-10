@@ -16,7 +16,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   List<NeonAcademyMemberModel> neonAcademyMembers = [];
-  List<ContactInformationModel> contactInformations = [];
 
   @override
   void initState() {
@@ -28,6 +27,22 @@ class _MyAppState extends State<MyApp> {
       });
     });
   }
+
+  /* Eğer daha basit bir yapı isteniyorsa şöyle yapılırdı:
+
+  ContactInformationModel korayscontact = ContactInformationModel(
+    email: "koray@gmail.com",
+    phoneNumber: 555 555 55 55
+  );
+
+  NeonAcademyMemberModel koraymember = NeonAcademyMemberModel(
+    fullName: "Koray",
+    age : 22,
+    contact: korayscontact,
+    ...
+  );
+
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +58,7 @@ class _MyAppState extends State<MyApp> {
 
             Expanded(
               child: ListView.builder(
-                itemCount: 19,
+                itemCount: neonAcademyMembers.length,
                 itemBuilder: (context, index) {
                   final member = neonAcademyMembers[index];
 
