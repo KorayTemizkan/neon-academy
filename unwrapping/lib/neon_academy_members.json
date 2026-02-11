@@ -6,6 +6,7 @@
         "memberLevel": "A2",
         "homeTown": "İstanbul",
         "age": 28,
+        "team": "flutterDevelopmentTeam",
         "contact": {
             "phoneNumber": "0532 111 22 33",
             "email": "zeynep.dandin@neonapps.co"
@@ -18,6 +19,7 @@
         "memberLevel": "S1",
         "homeTown": "Londra",
         "age": 35,
+        "team": "iOSDevelopmentTeam",
         "contact": {
             "phoneNumber": "0533 222 33 44",
             "email": "tyler@neonapps.co"
@@ -30,6 +32,7 @@
         "memberLevel": "B1",
         "homeTown": "Ankara",
         "age": 24,
+        "team": "flutterDevelopmentTeam",
         "contact": {
             "phoneNumber": "0535 333 44 55",
             "email": "ozlem.kaya@neonapps.co"
@@ -42,6 +45,7 @@
         "memberLevel": "A1",
         "homeTown": "İzmir",
         "age": 22,
+        "team": "flutterDevelopmentTeam",
         "contact": {
             "phoneNumber": "0541 444 55 66",
             "email": "irem.yasar@neonapps.co"
@@ -54,6 +58,7 @@
         "memberLevel": "B2",
         "homeTown": "Bursa",
         "age": 26,
+        "team": "androidDevelopmentTeam",
         "contact": {
             "phoneNumber": "0542 555 66 77",
             "email": "sena@neonapps.co"
@@ -66,6 +71,7 @@
         "memberLevel": "A1",
         "homeTown": "Kayseri",
         "age": 23,
+        "team": "flutterDevelopmentTeam",
         "contact": {
             "phoneNumber": "0543 666 77 88",
             "email": "anil.sezgin@neonapps.co"
@@ -78,6 +84,7 @@
         "memberLevel": "C1",
         "homeTown": "Eskişehir",
         "age": 25,
+        "team": "uiUxDesignTeam",
         "contact": {
             "phoneNumber": "0544 777 88 99",
             "email": "irem.designer@neonapps.co"
@@ -90,6 +97,7 @@
         "memberLevel": "B1",
         "homeTown": "Samsun",
         "age": 30,
+        "team": "iOSDevelopmentTeam",
         "contact": {
             "phoneNumber": "0545 888 99 00",
             "email": "baris.k@neonapps.co"
@@ -102,6 +110,7 @@
         "memberLevel": "A2",
         "homeTown": "Trabzon",
         "age": 29,
+        "team": "androidDevelopmentTeam",
         "contact": {
             "phoneNumber": "0546 999 00 11",
             "email": "eymen.v@neonapps.co"
@@ -114,6 +123,7 @@
         "memberLevel": "B2",
         "homeTown": "Kocaeli",
         "age": 27,
+        "team": "flutterDevelopmentTeam",
         "contact": {
             "phoneNumber": "0555 000 11 22",
             "email": "berfin.aydinli@neonapps.co"
@@ -126,6 +136,7 @@
         "memberLevel": "C1",
         "homeTown": "Diyarbakır",
         "age": 24,
+        "team": "flutterDevelopmentTeam",
         "contact": {
             "phoneNumber": "0530 123 45 67",
             "email": "nuri.firat@neonapps.co"
@@ -138,6 +149,7 @@
         "memberLevel": "B1",
         "homeTown": "Adana",
         "age": 23,
+        "team": "uiUxDesignTeam",
         "contact": {
             "phoneNumber": "0531 234 56 78",
             "email": "gulberk.aktay@neonapps.co"
@@ -150,6 +162,7 @@
         "memberLevel": "A1",
         "homeTown": "Mersin",
         "age": 25,
+        "team": "androidDevelopmentTeam",
         "contact": {
             "phoneNumber": "0532 345 67 89",
             "email": "eren.sonmez@neonapps.co"
@@ -162,6 +175,7 @@
         "memberLevel": "B1",
         "homeTown": "Denizli",
         "age": 24,
+        "team": "flutterDevelopmentTeam",
         "contact": {
             "phoneNumber": "0533 456 78 90",
             "email": "anil.sorgit@neonapps.co"
@@ -174,6 +188,7 @@
         "memberLevel": "A1",
         "homeTown": "Konya",
         "age": 21,
+        "team": "iOSDevelopmentTeam",
         "contact": {
             "phoneNumber": "0534 567 89 01",
             "email": "yusa.koc@neonapps.co"
@@ -186,6 +201,7 @@
         "memberLevel": "C1",
         "homeTown": "Aydın",
         "age": 24,
+        "team": "uiUxDesignTeam",
         "contact": {
             "phoneNumber": "0535 678 90 12",
             "email": "sena.tural@neonapps.co"
@@ -198,6 +214,7 @@
         "memberLevel": "B1",
         "homeTown": "Muğla",
         "age": 26,
+        "team": "uiUxDesignTeam",
         "contact": {
             "phoneNumber": "0536 789 01 23",
             "email": "doga.dolek@neonapps.co"
@@ -210,6 +227,7 @@
         "memberLevel": "A2",
         "homeTown": "Çanakkale",
         "age": 23,
+        "team": "uiUxDesignTeam",
         "contact": {
             "phoneNumber": "0537 890 12 34",
             "email": "gulsu.oz@neonapps.co"
@@ -222,6 +240,7 @@
         "memberLevel": "A2",
         "homeTown": "Kayseri",
         "age": 22,
+        "team": "flutterDevelopmentTeam",
         "contact": {
             "phoneNumber": "0538 901 23 45",
             "email": "beyza.yalvac@neonapps.co"

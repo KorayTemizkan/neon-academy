@@ -1,13 +1,13 @@
 import 'package:struct_class/models/contact_information_model.dart';
 
 class NeonAcademyMemberModel {
-  String fullName; // AD
-  String title; // Unvan
-  String horoscope; // Burç
-  String memberLevel; // A1, A2, C1 gibi harf+sayı yerine çözümüm
-  String homeTown; // Memleket
-  int age;
-  ContactInformationModel contact;
+  String fullName;                 // Ad
+  String title;                    // Unvan
+  String horoscope;                // Burç
+  String memberLevel;              // A1, A2, C1 gibi harf+sayı yerine çözümüm
+  String homeTown;                 // Memleket
+  int age;                         // Yaş
+  ContactInformationModel contact; // Diğer modelden çektik
 
   NeonAcademyMemberModel({
     required this.fullName,
@@ -19,6 +19,7 @@ class NeonAcademyMemberModel {
     required this.contact,
   });
 
+  // JSON'dan gelen verilerin türü belirli olduğu için daha fazla atama güvenliği eklemedim. Bu kadarı yeterli.
   factory NeonAcademyMemberModel.fromMap(Map<String, dynamic> map) {
     return NeonAcademyMemberModel(
       fullName: map["fullName"] ?? "",

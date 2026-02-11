@@ -21,13 +21,14 @@ class _MyAppState extends State<MyApp> {
   String debugString = "Debug";
   TextEditingController _questionController = TextEditingController();
 
+
+  // Model servisimiz üzerinden listemize atama yapıyoruz.
   Future<void> fetch() async {
-    fetchNeonAcademyMembers().then((data) {
-      setState(() {
-        neonAcademyMembers = data;
-        debugInteger = 0;
-        debugString = "Debug";
-      });
+    final data = await fetchNeonAcademyMembers();
+    setState(() {
+      neonAcademyMembers = data;
+      debugInteger = 0;
+      debugString = 'Debug';
     });
   }
 
@@ -39,8 +40,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   /* Create a dictionary that contains the number of members in each team, and print out the number of members in the UI/UX Design Team. */
-
-  Future<void> makeDictionary() async {
+  void makeDictionary() {
     Map<Team, int> countMembersTeams = {
       Team.flutterDevelopmentTeam: 0,
       Team.androidDevelopmentTeam: 0,
@@ -55,34 +55,35 @@ class _MyAppState extends State<MyApp> {
     }
 
     setState(() {
-      debugString = 'Toplam sayı';
+      debugString = 'Toplam UI UX takım üyesi sayı';
 
       debugInteger =
           countMembersTeams[Team.uiUxDesignTeam] ??
-          177; // mapten gelen nullabledır. sen sıfır ile derleyiciye güvence vermelisin.
+          0; // mapten gelen nullabledır. sen sıfır ile derleyiciye güvence vermelisin.
     });
   }
 
-  Future<void> getFlutterTeamMembers() async {
+  void getFlutterTeamMembers() {
     setState(() {
       backUp = neonAcademyMembers
           .where((element) => element.team == Team.flutterDevelopmentTeam)
           .toList();
 
       neonAcademyMembers = backUp;
+
+      debugString = 'Sıralandı';
     });
   }
 
   // Create a function that takes a team as an input and prints out the full names of all members in that team.
-  // FLutter DEveleoper enumunu alıp bu takımdakilerin adlarını yazdıracak
-
-  Future<void> getFlutterDevs(Enum f_team) async {
+  // FLutter DEveleoper enumunu alıp bu takımdakilerin adlarını yazalım
+  void getFlutterDevs(Team f_team) async {
     var names = neonAcademyMembers
         .where((element) => element.team == f_team)
         .toList();
 
     setState(() {
-      debugString += names.map((e) => e.fullName).toString();
+      debugString = names.map((e) => e.fullName).toString();
     });
   }
 
@@ -91,32 +92,71 @@ class _MyAppState extends State<MyApp> {
   "This member is a skilled Flutter developer", and if the member is in the UI/UX Design Team, 
   the function could print out "This member is a talented designer". */
 
-  Future<String> makeSwitch(String fcontroller) async {
+  // Bu fonksiyonu şu anda geliştirdiğim "Tığcık" projemden aldım. Basit bir bildirim fonksiyonu
+  Future<void> makeSwitchDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Bulmak istediğiniz kişinin adını girin'),
+                TextField(controller: _questionController),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                try {
+                  final member = neonAcademyMembers.firstWhere(
+                    (m) =>
+                        m.fullName.toLowerCase() ==
+                        _questionController.text.toLowerCase().trim(),
+                  );
+
+                  makeSwitch(member.fullName);
+                } catch (e) {
+                  print('Üye bulunamadı');
+                }
+
+                Navigator.of(context).pop();
+              },
+              child: const Text('Kontrol'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void makeSwitch(String fcontroller) {
     NeonAcademyMemberModel member = neonAcademyMembers.firstWhere(
       (element) => element.fullName.toLowerCase() == fcontroller.toLowerCase(),
     );
 
-    if (member.fullName.isNotEmpty) {
-      switch (member.team) {
-        case Team.flutterDevelopmentTeam:
-          debugString = 'Kullanıcının takımı: Flutter Takımı';
-          break;
-        case Team.iOSDevelopmentTeam:
-          debugString = 'Kullanıcının takımı: iOS Takımı';
-          break;
-        case Team.androidDevelopmentTeam:
-          debugString = 'Kullanıcının takımı: Android Takımı';
-          break;
-        case Team.uiUxDesignTeam:
-          debugString = 'Kullanıcının takımı: UiUx Takımı';
-          break;
-        default:
-          debugString = "Bu kullanıcı hiçbir takımda yok";
-          break;
+    setState(() {
+      if (member.fullName.isNotEmpty) {
+        switch (member.team) {
+          case Team.flutterDevelopmentTeam:
+            debugString = 'Kullanıcının takımı: Flutter Takımı';
+            break;
+          case Team.iOSDevelopmentTeam:
+            debugString = 'Kullanıcının takımı: iOS Takımı';
+            break;
+          case Team.androidDevelopmentTeam:
+            debugString = 'Kullanıcının takımı: Android Takımı';
+            break;
+          case Team.uiUxDesignTeam:
+            debugString = 'Kullanıcının takımı: UiUx Takımı';
+            break;
+          default:
+            debugString = "Bu kullanıcı hiçbir takımda yok";
+            break;
+        }
       }
-    }
-
-    return 'Nabers';
+    });
   }
 
   // Create a switch statement that prints out a different message for each team,
@@ -124,9 +164,10 @@ class _MyAppState extends State<MyApp> {
   //Flutter Development Team and "The UI/UX Design Team is the face of our academy"
   //for the UI/UX Design Team.
 
-  Future<void> message() async {
+  void message() {
     setState(() {
       // switch tek bir enum değer üzerinde çalışıyor
+      debugString = '';
       for (var element in Team.values) {
         switch (element) {
           case Team.flutterDevelopmentTeam:
@@ -154,53 +195,52 @@ class _MyAppState extends State<MyApp> {
   "XXX member is a rising star in the design world".
   */
 
-  Future<void> seniorityLevel(String fcontroller) async {
-    NeonAcademyMemberModel member = neonAcademyMembers.firstWhere(
-      (element) => element.fullName.toLowerCase() == fcontroller.toLowerCase(),
-    );
+  void seniorityLevel(String fcontroller) {
+    try {
+      NeonAcademyMemberModel member = neonAcademyMembers.firstWhere(
+        (element) =>
+            element.fullName.toLowerCase() == fcontroller.toLowerCase(),
+      );
 
-    setState(() {
-      if (member.fullName.isNotEmpty) {
-        for (var element in Team.values) {
-          switch (element) {
-            // switch case'lerine sadece tek bir şart koyabilirsin
-            case Team.androidDevelopmentTeam:
-              if (member.age > 24) {
-                debugString = 'Android geliştiricisi ve yetişkin';
-              }
-              debugString = 'Android geliştiricisi ve genç';
-              break;
-            case Team.flutterDevelopmentTeam:
-              if (member.age > 24) {
-                debugString = 'Flutter geliştiricisi ve yetişkin';
-              }
-              debugString = 'Flutter geliştiricisi ve genç';
-              break;
-            case Team.iOSDevelopmentTeam:
-              if (member.age > 24) {
-                debugString = 'iOS geliştiricisi ve yetişkin';
-              }
-              debugString = 'iOS geliştiricisi ve genç';
-              break;
-            case Team.uiUxDesignTeam:
-              if (member.age > 24) {
-                debugString = 'UI & UX geliştiricisi ve yetişkin';
-              }
-              debugString = 'UI & UX geliştiricisi ve genç';
-              break;
-            default:
-              debugString = 'Test';
-          }
+      setState(() {
+        switch (member.team) {
+          case Team.flutterDevelopmentTeam:
+            debugString = member.age > 24
+                ? 'Flutter geliştiricisi ve yetişkin'
+                : 'Flutter geliştiricisi ve genç';
+            break;
+
+          case Team.androidDevelopmentTeam:
+            debugString = member.age > 24
+                ? 'Android geliştiricisi ve yetişkin'
+                : 'Android geliştiricisi ve genç';
+            break;
+
+          case Team.iOSDevelopmentTeam:
+            debugString = member.age > 24
+                ? 'iOS geliştiricisi ve yetişkin'
+                : 'iOS geliştiricisi ve genç';
+            break;
+
+          case Team.uiUxDesignTeam:
+            debugString = member.age > 24
+                ? 'UI & UX geliştiricisi ve yetişkin'
+                : 'UI & UX geliştiricisi ve genç';
+            break;
         }
-      }
-    });
+      });
+    } catch (e) {
+      setState(() {
+        debugString = "Üye bulunamadı";
+      });
+    }
   }
 
   // Create a function that takes a team as an input and returns an array of the
   // contact information of all members in that team.
 
   // Flutter Developer takımının contact ınfo listesi
-  Future<List<ContactInformationModel>> bringContactInfos(Team f_team) async {
+  List<ContactInformationModel> bringContactInfos(Team f_team) {
     var contactInfoList = neonAcademyMembers
         .where((element) => element.team == f_team)
         .map((e) => e.contact)
@@ -211,7 +251,7 @@ class _MyAppState extends State<MyApp> {
 
   // Create a function that takes a team as an input and calculates the average age of the members in that team.
 
-  Future<void> averageAge(Team f_team) async {
+  void averageAge(Team f_team) {
     List<int> ageList = neonAcademyMembers
         .where((element) => element.team == f_team)
         .map((e) => e.age)
@@ -221,6 +261,7 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       sum ~/= ageList.length;
+      debugString = 'Yaş ortalaması';
       debugInteger = sum;
     });
   }
@@ -230,7 +271,7 @@ class _MyAppState extends State<MyApp> {
   promote them to "Senior Flutter Developer" and if the member is in the UI/UX Design Team,
   the function could promote them to "Lead Designer". */
 
-  Future<void> promote(String fcontroller) async {
+  void promote(String fcontroller) {
     NeonAcademyMemberModel member = neonAcademyMembers.firstWhere(
       (element) => element.fullName.toLowerCase() == fcontroller.toLowerCase(),
     );
@@ -273,11 +314,12 @@ class _MyAppState extends State<MyApp> {
   (Flutter Development Team for example)
   */
 
-  Future<void> olderOnes(int f_age, Team teamType) async {
+  void olderOnes(int f_age, Team teamType) {
     setState(() {
       var olderOnes = neonAcademyMembers.where(
         (element) => element.age > f_age && element.team == teamType,
       );
+      debugString = '';
 
       for (var element in olderOnes) {
         debugString += '\n';
@@ -289,7 +331,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     if (neonAcademyMembers.isEmpty) {
-      return const CircularProgressIndicator();
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -301,146 +343,57 @@ class _MyAppState extends State<MyApp> {
             Card(
               margin: const EdgeInsets.all(16),
               elevation: 1,
-
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        getFlutterTeamMembers();
-                      },
-                      child: Text(
-                        'Flutter takımının üyelerinin adlarını yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
+                    Text(
+                      'KONTROL PANELİ\n(Liste Aşağıda)\n(Her işlem öncesi sıfırlayınız)',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 36),
                     ),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        makeDictionary();
-                      },
-                      child: Text(
-                        'Dictionary oluştur ve UI/UX sayısını yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
+                    myButton(() => fetch(), '* SIFIRLA *'),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        getFlutterDevs(Team.androidDevelopmentTeam);
-                      },
-                      child: Text(
-                        'Flutter takımının üyelerinin adlarını yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
+                    myButton(() {
+                      getFlutterTeamMembers();
+                    }, 'Flutter takımının üyelerinin bilgilerini yazdır'),
 
-                    TextField(controller: _questionController),
+                    myButton(() {
+                      makeDictionary();
+                    }, 'Dictionary oluştur ve UI/UX sayısını yazdır'),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        makeSwitch(_questionController.text);
-                      },
+                    myButton(() {
+                      getFlutterDevs(Team.androidDevelopmentTeam);
+                    }, 'Flutter takımının üyelerinin adlarını yazdır'),
 
-                      child: Column(
-                        children: [
-                          Text(
-                            'Kullanıcı adı gir ve takımını öğren',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
+                    myButton(() {
+                      makeSwitchDialog();
+                    }, 'Kullanıcı adı gir ve takımını öğren'),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        promote(_questionController.text);
-                      },
+                    myButton(() {
+                      promote("Zeynep Dandin");
+                    }, 'Zeynep Dandin kişisini terfi yap'),
 
-                      child: Column(
-                        children: [
-                          Text(
-                            'Terfi yap',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
+                    myButton(
+                      () {
                         olderOnes(22, Team.flutterDevelopmentTeam);
                       },
-
-                      child: Column(
-                        children: [
-                          Text(
-                            'Yaşa ve takıma göre yazdır',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ],
-                      ),
+                      'Flutter takımındakilerden 22 yaşından büyük olanları yazdır',
                     ),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        averageAge(Team.flutterDevelopmentTeam);
-                      },
+                    myButton(() {
+                      averageAge(Team.flutterDevelopmentTeam);
+                    }, 'Flutter Developer Takımının yaş ortalaması'),
 
-                      child: Column(
-                        children: [
-                          Text(
-                            'Flutter Developer Takımının yaş ortalaması',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
+                    myButton(() {
+                      message();
+                    }, 'Takıma göre mesaj yazdır'),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        message();
-                      },
-
-                      child: Column(
-                        children: [
-                          Text(
-                            'Takıma göre mesaj yazdır',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        seniorityLevel(_questionController.text);
-                      },
-
-                      child: Column(
-                        children: [
-                          Text(
-                            'Takım ve yaş bilgisini yazdır',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          fetch();
-                        });
-                      },
-                      child: Text(
-                        'Sıfırla',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
+                    myButton(() {
+                      seniorityLevel('Zeynep Dandin');
+                    }, 'Zeynep Dandin kişisinin takım ve yaş bilgisini yazdır'),
                   ],
                 ),
               ),
@@ -496,6 +449,14 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
       ),
+    );
+  }
+
+  // Tekrar kullanılabilir buton fonksiyonu
+  ElevatedButton myButton(VoidCallback func, String text) {
+    return ElevatedButton(
+      onPressed: func,
+      child: Text(text, style: TextStyle(color: Colors.red)),
     );
   }
 }

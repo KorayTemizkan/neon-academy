@@ -1,8 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:struct_class/models/neon_academy_member_model.dart';
 
-// Servisi ayrı tanımalamak temiz bir mimari için önemli
 Future<List<NeonAcademyMemberModel>> fetchNeonAcademyMembers() async {
   final String loadedJson = await rootBundle.loadString(
     'lib/neon_academy_members.json',

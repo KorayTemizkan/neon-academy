@@ -3,10 +3,18 @@ import 'package:struct_class/model_service.dart';
 import 'package:struct_class/models/contact_information_model.dart';
 import 'package:struct_class/models/neon_academy_member_model.dart';
 
+// JSON dosyasını Slack üzerinden aldım ve eksik bilgileri ChatGPT ile doldurtarak oluşturdum.
+// Kendi projemde de JSON ile veri çekme yöntemini kullandığım için böyle yapmayı tercih ettim.
+
+// ! Hata yakalamaları bilerek eklemedim test amaçlı olduğu için. (Fonksiyonlar da başka dosyaya alınabilir ama demo olduğu için gerek duymadım)
+// Olabildiğince az yapay zeka kullanmaya çalıştım. Kullandığım kaynakların bazılarına fonksiyonların üstlerine ekledim.
+
 void main() {
   runApp(MaterialApp(home: MyApp()));
 }
 
+// UI yeniden çizimi, state değişimleri, atamalar olduğu için stateless yapamayız.
+// State ekranda değişebilen her şeydir. Bir durum, varlıktır. Değişme imkanı vardır. Enerji gibi düşün.
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -15,22 +23,28 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // Listelerimiz
   List<NeonAcademyMemberModel> neonAcademyMembers = [];
   List<NeonAcademyMemberModel> backUp = [];
+
+  // Görsel olarak anlık veri takibi yaparız.
   int debugInteger = 0;
   String debugString = "Debug";
+
+  // Girdi almak için kullanılır.
   TextEditingController _questionController = TextEditingController();
 
+  // Model servisimiz üzerinden listemize atama yapıyoruz.
   Future<void> fetch() async {
-    fetchNeonAcademyMembers().then((data) {
-      setState(() {
-        neonAcademyMembers = data;
-        debugInteger = 0;
-        debugString = "Debug";
-      });
+    final data = await fetchNeonAcademyMembers();
+    setState(() {
+      neonAcademyMembers = data;
+      debugInteger = 0;
+      debugString = '';
     });
   }
 
+  // StatefullWidgetlerde widget açılışında bir kere çalışan bir döngü metodudur.
   @override
   void initState() {
     // TODO: implement initState
@@ -38,6 +52,7 @@ class _MyAppState extends State<MyApp> {
     fetch();
   }
 
+  // Bu fonksiyonu şu anda geliştirdiğim "Tığcık" projemden aldım. Basit bir bildirim fonksiyonu
   Future<void> printCurrentIndex() async {
     return showDialog(
       context: context,
@@ -58,11 +73,12 @@ class _MyAppState extends State<MyApp> {
                   final member = neonAcademyMembers.firstWhere(
                     (m) =>
                         m.fullName.toLowerCase() ==
-                        _questionController.text.toLowerCase(),
+                        _questionController.text.toLowerCase().trim(),
                   );
 
                   setState(() {
                     debugInteger = neonAcademyMembers.indexOf(member);
+                    debugString = 'Kişi indexi';
                   });
 
                   print('Index: $debugInteger');
@@ -80,7 +96,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<void> addNewMentor() async {
+  void addNewMentor() {
     ContactInformationModel mentorContact = ContactInformationModel(
       email: 'koray@gmail.com',
       phoneNumber: '555 555 55 55',
@@ -99,18 +115,18 @@ class _MyAppState extends State<MyApp> {
         ),
       );
 
-      debugString = 'Yeni Mentor Eklendi';
+      debugString = 'Koray mentorü eklendi';
     });
   }
 
-  Future<void> removeA1Levels() async {
+  void removeA1Levels() {
     setState(() {
       neonAcademyMembers.removeWhere((element) => element.memberLevel == 'A1');
       debugString = 'A1 düzeyindeki kişiler kaldırıldı';
     });
   }
 
-  Future<void> numberOfFlutterDevs() async {
+  void numberOfFlutterDevs() {
     setState(() {
       debugInteger = neonAcademyMembers
           .where((element) => element.title == 'Flutter Developer')
@@ -120,44 +136,48 @@ class _MyAppState extends State<MyApp> {
   }
 
   // https://ekimunyime.medium.com/exploring-array-manipulation-in-dart-flutter-db88f806a769
-  Future<void> filterAndTransfer() async {
+  void filterAndTransfer() {
     setState(() {
       neonAcademyMembers = neonAcademyMembers
           .where((element) => element.age > 24)
           .toList();
+      debugString = 'Kişiler filtrelendi';
     });
   }
 
   //https://dev.to/newtonmunene_yg/essential-dart-list-array-methods-if7
-  Future<void> delete(int index) async {
+  void delete(int index) {
     if (index >= 0 && index < neonAcademyMembers.length) {
       setState(() {
         neonAcademyMembers.removeAt(index);
+        debugString = 'Kişi silindi';
       });
     }
   }
 
   //https://dev.to/newtonmunene_yg/essential-dart-list-array-methods-if7
-  Future<void> sortAge() async {
+  void sortAge() {
     setState(() {
       neonAcademyMembers.sort((b, a) => a.age.compareTo(b.age));
+      debugString = 'Sıralandı';
     });
   }
 
   //https://stackoverflow.com/questions/27897932/sorting-ascending-and-descending-in-dart
-  Future<void> sortAlphabetically() async {
+  void sortAlphabetically() {
     setState(() {
       neonAcademyMembers.sort(
         (b, a) =>
             a.fullName.toLowerCase().compareTo((b.fullName.toLowerCase())),
       );
+      debugString = 'Sıralandı';
     });
   }
 
-  Future<void> groupPeopleByMemberLevel() async {
+  void groupPeopleByMemberLevel() {
     // A1, A2, A3, B1, B2, S1, S3 (Member Level ilk elemanları büyük olanları sırala, sonra bu sıralamanın içindekileri tekrar 1,2'ye göre sırala)
     setState(() {
-      /* Kendi denemem
+      /* Kendi denemem ama tam olmadı
       neonAcademyMembers.sort(
         (a, b) => a.memberLevel.toLowerCase()[0].compareTo(
           b.memberLevel.toLowerCase()[0],
@@ -171,10 +191,13 @@ class _MyAppState extends State<MyApp> {
           b.memberLevel.toLowerCase(),
         );
       });
+
+      debugString = 'Kıdem düzeyine göre sıralandı';
     });
   }
 
-  Future<void> oldestOne() async {
+  // https://api.flutter.dev/flutter/dart-collection/ListQueue/reduce.html
+  void oldestOne() {
     setState(() {
       debugInteger = neonAcademyMembers
           .reduce((a, b) => a.age > b.age ? a : b)
@@ -185,7 +208,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> longestName() async {
+  void longestName() {
     setState(() {
       debugString = neonAcademyMembers
           .reduce((a, b) => a.fullName.length > b.fullName.length ? a : b)
@@ -194,19 +217,20 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> groupPeopleByHoroscope() async {
+  void groupPeopleByHoroscope() {
     setState(() {
       backUp = neonAcademyMembers
           .where((element) => element.horoscope == 'Koç')
           .toList();
       neonAcademyMembers =
           backUp; // Burada Card yapımda ekrana yazdırdığım için ek olarak fonksiyon eklemek istemedim. Yeni listeye kopyalandığını göstermek için süreci uzattım.
+      debugString = 'Koç burcu olanlar sıralandı';
     });
   }
 
   // en yorucusu buydu
   // https://dev.to/jrmatanda/how-to-remove-duplicates-from-an-array-in-dart-a5m
-  Future<void> groupPeopleByTitle() async {
+  void groupPeopleByTitle() {
     // Flutter Developer 3 tane, ios developer 4 tane mesela,
     // titleları listeye al, daha sonra aynı elemanları listeden sil. 3 elemanlı liste kaldı
     // sonra bu elemanlara göre yeni neonacademymemberCOntact listeleri oluştur,
@@ -236,7 +260,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> mostCommonHometown() async {
+  void mostCommonHometown() {
     // 111332
     setState(() {
       var neonAcademyMembersHometowns = neonAcademyMembers
@@ -249,15 +273,16 @@ class _MyAppState extends State<MyApp> {
         counts[element] = (counts[element] ?? 0) + 1; // Güzel bir yol
       }
 
-      var mostFrequent = counts.entries
-          .reduce((a, b) => a.value > b.value ? a : b); // key value olarak tutuluyor. kaç tane olduğu değil hangi sayı olduğunu istiyoruz. (Bu map yapısına dikkat hep list kullandık)
+      var mostFrequent = counts.entries.reduce(
+        (a, b) => a.value > b.value ? a : b,
+      ); // key value olarak tutuluyor. kaç tane olduğu değil hangi sayı olduğunu istiyoruz. (Bu map yapısına dikkat hep list kullandık)
 
       debugString = mostFrequent.key;
       debugInteger = mostFrequent.value;
     });
   }
 
-  Future<void> fetchContactInfos() async {
+  void fetchContactInfos() {
     //Map iterable olduğu için seçim böyle oluyor
     setState(() {
       List<String> emailAdresses = neonAcademyMembers
@@ -270,7 +295,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> averageAge() async {
+  void averageAge() {
     setState(() {
       var ages = neonAcademyMembers
           .where((element) => element.age > 0)
@@ -284,14 +309,17 @@ class _MyAppState extends State<MyApp> {
         (value, element) => value + element,
       ); // güzel bir fonksiyon c++'da yoktu
 
-      debugInteger ~/= ages.length; // /= Dart dilinde her zaman double üretir.
+      debugInteger =
+          toplam ~/ ages.length; // /= Dart dilinde her zaman double üretir.
+      debugString = 'Ortalama yas';
     });
   }
 
+  // Build metodu her state değişimi sonrası yeniden çizilir.
   @override
   Widget build(BuildContext context) {
     if (neonAcademyMembers.isEmpty) {
-      return const CircularProgressIndicator();
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -301,192 +329,53 @@ class _MyAppState extends State<MyApp> {
             SizedBox(height: 50),
 
             Card(
-              margin: EdgeInsets.all(16),
+              margin: const EdgeInsets.all(16),
               elevation: 1,
-
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'KONTROL PANELİ\nLİSTE AŞAĞIDA',
+                      'KONTROL PANELİ\n(Liste Aşağıda)\n(Her işlem öncesi sıfırlayınız)',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 36),
                     ),
 
-                    // https://dev.to/newtonmunene_yg/essential-dart-list-array-methods-if7
-                    ElevatedButton(
-                      onPressed: () {
-                        delete(2);
-                      },
-                      child: Text(
-                        '3. kişiyi Sil',
-                        style: TextStyle(color: Colors.red),
-                      ),
+                    myButton(() => fetch(), '* SIFIRLA *'),
+                    myButton(() => delete(2), '3. kişiyi Sil'),
+                    myButton(sortAge, 'Yaşlara göre büyükten küçüğe sırala'),
+                    myButton(
+                      sortAlphabetically,
+                      'Alfabenin tersine göre sırala',
                     ),
-
-                    // https://stackoverflow.com/questions/27897932/sorting-ascending-and-descending-in-dart
-                    ElevatedButton(
-                      onPressed: () {
-                        sortAge();
-                      },
-                      child: Text(
-                        'Yaşlara göre büyükten küçüğe sırala',
-                        style: TextStyle(color: Colors.red),
-                      ),
+                    myButton(
+                      filterAndTransfer,
+                      '24 yaşından büyük kişileri filtrele',
                     ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        sortAlphabetically();
-                      },
-                      child: Text(
-                        'Alfabenin tersine göre sırala',
-                        style: TextStyle(color: Colors.red),
-                      ),
+                    myButton(
+                      numberOfFlutterDevs,
+                      'Flutter geliştiricisi sayısını yazdır',
                     ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        filterAndTransfer();
-                      },
-                      child: Text(
-                        '24 yaşından büyük kişileri yeni bir diziye aktar ve yeni dizinin elemanlarını yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
+                    myButton(printCurrentIndex, 'Kişi adı gir ve indexini gör'),
+                    myButton(addNewMentor, 'Koray mentorunu ekle'),
+                    myButton(removeA1Levels, 'A1 düzeyindeki kişileri kaldır'),
+                    myButton(oldestOne, 'En büyük kişinin bilgilerini yazdır'),
+                    myButton(longestName, 'En uzun ada sahip kişiyi yazdır'),
+                    myButton(
+                      groupPeopleByHoroscope,
+                      'Koç burcuna sahip olanları grupla',
                     ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        numberOfFlutterDevs();
-                      },
-                      child: Text(
-                        'Flutter geliştirisi sayısını yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
+                    myButton(mostCommonHometown, 'En yaygın memleketi yazdır'),
+                    myButton(averageAge, 'Ortalama yaşı yazdır'),
+                    myButton(fetchContactInfos, 'Mail adreslerini yazdır'),
+                    myButton(
+                      groupPeopleByMemberLevel,
+                      'Kıdem düzeyine göre sırala',
                     ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        printCurrentIndex();
-                      },
-                      child: Text(
-                        'Kişi Adı gir ve indexini gör',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        addNewMentor();
-                      },
-                      child: Text(
-                        'Mentor düzeyinde kişi ekle',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        removeA1Levels();
-                      },
-                      child: Text(
-                        'A1 düzeyindeki kişileri kaldır',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        oldestOne();
-                      },
-                      child: Text(
-                        'En büyük kişinin bilgilerini yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        longestName();
-                      },
-                      child: Text(
-                        'En uzun ada sahip kişinin bilgilerini yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        groupPeopleByHoroscope();
-                      },
-                      child: Text(
-                        'Koç burcuna sahip olanları grupla',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        mostCommonHometown();
-                      },
-                      child: Text(
-                        'En yaygın memleketi yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        averageAge();
-                      },
-                      child: Text(
-                        'Ortalama yaşı yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        fetchContactInfos();
-                      },
-                      child: Text(
-                        'Mail adreslerini yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        groupPeopleByMemberLevel();
-                      },
-                      child: Text(
-                        'Kıdem düzeyine göre sırala',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        groupPeopleByTitle();
-                      },
-                      child: Text(
-                        'Unvana göre telefon numaralarını yazdır',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          fetch();
-                        });
-                      },
-                      child: Text(
-                        'Sıfırla',
-                        style: TextStyle(color: Colors.red),
-                      ),
+                    myButton(
+                      groupPeopleByTitle,
+                      'Unvana göre telefon numaralarını yazdır',
                     ),
                   ],
                 ),
@@ -510,8 +399,9 @@ class _MyAppState extends State<MyApp> {
             ),
 
             ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true, // İçindeki elemanlar kadar yer kapla
+              physics:
+                  const NeverScrollableScrollPhysics(), // Zaten yukarıda kaydırılabilirlik vermiştik burayı kapatıyoruz.
               itemCount: neonAcademyMembers.length,
               itemBuilder: (context, index) {
                 final member = neonAcademyMembers[index];
@@ -542,6 +432,14 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
       ),
+    );
+  }
+
+  // Tekrar kullanılabilir buton fonksiyonumuz
+  ElevatedButton myButton(VoidCallback func, String text) {
+    return ElevatedButton(
+      onPressed: func,
+      child: Text(text, style: TextStyle(color: Colors.red)),
     );
   }
 }
