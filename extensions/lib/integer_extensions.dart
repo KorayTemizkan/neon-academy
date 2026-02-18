@@ -11,16 +11,16 @@ extension IntegerExtensions on int {
       return 'Asal';
     }
 
-    if (this % 2 != 0) {
-      //3
-      for (var i = 2; i < this; i++) {
-        if (this % i == 0) {
-          continue;
-        }
+    if (this % 2 == 0) {
+      return 'Asal Değil';
+    }
+
+    for (var i = 3; i < this; i += 2) {
+      if (this % i == 0) {
         return 'Asal Değil';
       }
     }
 
-    return '';
+    return 'Asal';
   }
 }

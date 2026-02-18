@@ -18,15 +18,15 @@ extension StringExtensions on String {
       return 'Palindrom';
     }
 
-    // SosOs
+    // aba
     if (this.length % 2 != 0) {
       for (int start = 0, length = this.length - 1; start != length;) {
-        // sosos
+        // aba
         if (this[start] == this[length]) {
-          //1 3
+          //1 1
           start++;
           length--;
-          if (start == length - 1) {
+          if (start == length) {
             return 'Palindrom';
           }
           continue;

@@ -8,10 +8,11 @@ class Sp extends ChangeNotifier {
 
   Future<void> init() async {
     _prefs = await SharedPreferencesWithCache.create(
-      cacheOptions: SharedPreferencesWithCacheOptions(
+      cacheOptions: SharedPreferencesWithCacheOptions( // Burada ihtiyacımız olan keyleri alıyoruz
         allowList: {_firstName, _lastName, _visitCount, _beenAbroad},
       ),
     );
+    // Değişikliği notifier ile her yere bildir
     notifyListeners();
   }
 
@@ -49,7 +50,7 @@ class Sp extends ChangeNotifier {
     }
   }
 
-  Future<void> setBeenABroad(bool value) async {
+  Future<void> setBeenAbroad(bool value) async {
     if (_prefs != null) {
       await _prefs!.setBool(_beenAbroad, value);
       notifyListeners();

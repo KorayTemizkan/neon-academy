@@ -6,7 +6,6 @@ import 'package:extensions/map_model.dart';
 import 'package:extensions/set_extensions.dart';
 import 'package:extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   runApp(MaterialApp(home: const MyApp()));
@@ -20,8 +19,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  TextEditingController pallindromController = TextEditingController();
-  TextEditingController primeController = TextEditingController();
+  TextEditingController myController = TextEditingController();
   bool kLetter = false;
   DateTime? firstDate;
   DateTime? secondDate;
@@ -42,89 +40,122 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(height: 50),
-          TextField(controller: pallindromController),
-
-          Text('Palindrom Kontrolü'),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                debug = pallindromController.text.isPallindrom();
-              });
-            },
-            child: Text('Sonuç: $debug'),
-          ),
-
-          TextField(
-            controller: primeController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          ),
-
-          Text('Asal Sayı Kontrolü'),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                int? num = int.parse(primeController.text);
-                debug = num.isPrime();
-              });
-            },
-            child: Text('Sonuç: $debug'),
-          ),
-
-          Text('Tarih Farkı Kontrolü'),
-          ElevatedButton(
-            onPressed: () async {
-              firstDate = await _pickDate(context);
-              secondDate = await _pickDate(context);
-
-              setState(() {
-                var test = secondDate?.calculateRemainingDays(firstDate!);
-
-                debug = test.toString();
-              });
-            },
-            child: Text('Sonuç: $debug'),
-          ),
-
-          // Bool extension
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                debug = kLetter.isThereKLetter();
-              });
-            },
-            child: Text('Sonuç: $debug'),
-          ),
-
-          // Set extension
-          ElevatedButton(
-            onPressed: () {
-              List<String> test = ['a', 'b', 'a'];
-              setState(() {
-                debug = test.toSet().uniques();
-              });
-            },
-            child: Text('Sonuç: $debug'),
-          ),
-
-          // Map extension, burada biraz uğraşmak istedim o yüzden böyle bir yöntem seçtim yoksa ayrı model oluşturacaktım
-          ElevatedButton(
-            onPressed: () {
-              List<MapModel> citizens = [
-                MapModel(name: 'Koray', surname: 'Temizkan'),
-                MapModel(name: 'Ahmet', surname: 'Yılmaz'),
-                MapModel(name: 'Fidan', surname: 'Temizkan'),
-              ];
-
-              var censusMap = citizens.groupBySurname();
-              print(censusMap);
-            },
-            child: Text('Sonuç: $debug'),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            SizedBox(height: 50),
+        
+            TextField(
+              controller: myController,
+              decoration: InputDecoration(
+                labelText: 'Metin',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            ),
+        
+            Text('Palindrom Kontrolü'),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  debug = myController.text.isPallindrom();
+                });
+              },
+              child: Text('Sonuç: $debug'),
+            ),
+        
+            SizedBox(height: 15),
+        
+            Text('Asal Sayı Kontrolü'),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  int? num = int.tryParse(myController.text);
+        
+                  if (num != null) {
+                    debug = num.isPrime();
+                  } else {
+                    debug = 'Sayı giriniz!';
+                  }
+                });
+              },
+              child: Text('Sonuç: $debug'),
+            ),
+        
+            SizedBox(height: 15),
+        
+            Text('Tarih Farkı Kontrolü'),
+            ElevatedButton(
+              onPressed: () async {
+                firstDate = await _pickDate(context);
+                secondDate = await _pickDate(context);
+        
+                if (firstDate != null && secondDate != null) {
+                  setState(() {
+                    var test = secondDate?.calculateRemainingDays(firstDate!);
+        
+                    debug = test.toString();
+                  });
+                }
+              },
+              child: Text('Sonuç: $debug'),
+            ),
+        
+            SizedBox(height: 15),
+        
+            // Bool extension
+            Text('K harfi var mı kontrolü'),
+            ElevatedButton(
+              onPressed: () {
+                if (myController.text.contains('k')) {
+                  kLetter = true;
+                } else {
+                  kLetter = false;
+                }
+                setState(() {
+                  debug = kLetter.isThereKLetter();
+                });
+              },
+              child: Text('Sonuç: $debug'),
+            ),
+        
+            Divider(height: 40, color: Colors.lightBlue),
+        
+            // Set extension
+            Text('a,b,a listesinden benzersiz olanlar Kontrolü'),
+            ElevatedButton(
+              onPressed: () {
+                List<String> test = ['a', 'b', 'a'];
+                setState(() {
+                  debug = test.toSet().uniques();
+                });
+              },
+              child: Text('Sonuç: $debug'),
+            ),
+        
+            SizedBox(height: 15),
+        
+            Text('3 kişiden aynı soyadlıları listelemek'),
+            ElevatedButton(
+              onPressed: () {
+                List<MapModel> citizens = [
+                  MapModel(name: 'Koray', surname: 'Temizkan'),
+                  MapModel(name: 'Ahmet', surname: 'Yılmaz'),
+                  MapModel(name: 'Fidan', surname: 'Temizkan'),
+                ];
+        
+                var censusMap = citizens.groupBySurname();
+                print(censusMap);
+                setState(() {
+                  debug = censusMap.toString();
+                });
+              },
+              child: Text('Sonuç: $debug'),
+            ),
+          ],
+        ),
       ),
     );
   }
