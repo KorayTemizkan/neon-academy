@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stepper/stepper_view.dart';
+import 'package:page_controller/my_page_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,8 +10,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const StepperView(),
-    );
+    return MaterialApp(home: const MyPageView());
   }
 }
