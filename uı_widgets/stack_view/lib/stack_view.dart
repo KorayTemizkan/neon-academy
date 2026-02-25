@@ -1,28 +1,84 @@
 import 'package:flutter/material.dart';
 
-class StackView extends StatefulWidget {
+class StackView extends StatelessWidget {
   const StackView({super.key});
 
   @override
-  State<StackView> createState() => _StackViewState();
+  Widget build(BuildContext context) {
+    // Ekran boyutlarını alıyoruz. Bunu daha önce kullandım ama yine de sor Koray.
+    final mySize = MediaQuery.of(context).size;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Hogwarts Spell Stack',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
+      ),
+      body: Center(
+        child: Container(
+          // Buradaki width ve height ile responsive özellik sağladık. Aşağıda stack ve konumlandırma ile düzenli görünüm sağladık
+          width: mySize.width * 0.8, // Yatayda ekranın %80'i kadar alan kapla
+          height: mySize.height * 0.5, // Dikeyde ekranın %50'si kadar alan kapla
+          color: Colors.grey,
+          child: Stack(
+            children: [
+              // 1. Büyü: Sol Üst
+              const Positioned(
+                top: 20,
+                left: 20,
+                child: SpellLabel(text: "Expecto Patronum", color: Colors.cyan),
+              ),
+
+              // 2. Büyü: Sağ Üst
+              const Positioned(
+                top: 20,
+                right: 20,
+                child: SpellLabel(text: "Expelliarmus", color: Colors.red),
+              ),
+
+              // 3. Büyü: Sol Alt
+              const Positioned(
+                bottom: 20,
+                left: 20,
+                child: SpellLabel(text: "Stupefy", color: Colors.orange),
+              ),
+
+              // 4. Büyü: Sağ Alt
+              const Positioned(
+                bottom: 20,
+                right: 20,
+                child: SpellLabel(text: "Avada Kedavra", color: Colors.green),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _StackViewState extends State<StackView> {
+// Normalde hep ayrı dosyada widget olarak kullanıyoruz bugünlük böyle deneyelim. Aynı mantık zaten.  
+class SpellLabel extends StatelessWidget {
+  final String text;
+  final Color color;
+  const SpellLabel({super.key, required this.text, required this.color});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(height: 48),
-          
-          // Ekran dikeyken sola yatık şekilde dikey sıralanırlar.
-          // Ekran yatayken sola yatık şekilde dikey sıralanırlar
-          // Aralarındaki boşluğu otomatik ayarlarlar çünkü Expanded widgeti responsive tasarım yapmamızı sağlar.
-          Expanded(child: Text('Expelliarmus')),
-          Expanded(child: Text('Expecto Patronum')),
-          Expanded(child: Text('Stupefy')),
-          Expanded(child: Text('Lumos')),
-        ],
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

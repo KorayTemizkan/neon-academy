@@ -9,7 +9,13 @@ class AppDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Ayrıntı'), backgroundColor: Colors.red),
+      appBar: AppBar(
+        title: Text(
+          '${appModel.appName}',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -22,9 +28,22 @@ class AppDetailView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     appModel.appIcon,
-                    Text(appModel.appName),
-                    Text(appModel.appCategory),
-                    Text(appModel.releaseDate.toString().split(" ")[0]),
+
+                    SizedBox(height: 16),
+
+                    Image(
+                      image: NetworkImage(appModel.appCover),
+                      fit: BoxFit.cover,
+                      width: 160,
+                    ),
+
+                    SizedBox(height: 16),
+
+                    Text('Ad: ${appModel.appName}'),
+                    Text('Kategori: ${appModel.appCategory}'),
+                    Text(
+                      'Tarih: ${appModel.releaseDate.toString().split(" ")[0]}',
+                    ),
                   ],
                 ),
               ),

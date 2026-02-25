@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:grid_view/app_detail_view.dart';
 import 'package:grid_view/app_list.dart';
 import 'package:grid_view/app_model.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MyGridView extends StatefulWidget {
@@ -16,27 +17,41 @@ class _MyGridViewState extends State<MyGridView> {
   // JSON'dan çekmeyi de yapabilirdim ilk haftaki projelerde olduğu gibi ya da Tığcık projemde olduğu gibi ama asıl odak burası değil artık diye yapmadım
   final List<AppModel> myAppList = appList;
   List<AppModel> selectedApps = [];
+  int mySize = 2;
 
-  // URL Launcher paketinin kurulumu
+  // url_launcher paketinin kurulumu
   // https://pub.dev/packages/url_launcher
-  final Uri _url = Uri.parse('https://flutter.dev');
-  Future<void> _launchUrl() async {
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
+  Future<void> _launchUrl(Uri url) async {
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
     }
   }
-  
-  // share_plus paketini kullanarak paylaş seçeneğini etkinleştir
-  // grid view boyutlandırmasını düzenleme seçeneğini etkinleştir
-  // indicatorun süresi bitince tüm cardlara 1 saniyelik progress indicator ekleyelim
+
+  // share_plus paketinin kurulumu
+  // https://pub.dev/packages/share_plus
+  Future<void> _shareLink(String url) async {
+    SharePlus.instance.share(ShareParams(text: 'check out my website $url'));
+  }
+
+  Future<void> _changeSize() async {
+    setState(() {
+      if (mySize == 2) {
+        mySize = 3;
+      } else {
+        mySize = 2;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Grid View', style: TextStyle(color: Colors.white),), backgroundColor: Colors.blue),
+      appBar: AppBar(
+        title: Text('Grid View', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue,
+      ),
 
       body: RefreshIndicator(
-        
         color: Colors.white,
         backgroundColor: Colors.blue,
         onRefresh: () async {
@@ -50,15 +65,15 @@ class _MyGridViewState extends State<MyGridView> {
           padding: const EdgeInsets.all(8),
 
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // Sütun sayımız sabit 2 olacak
-            mainAxisExtent: 120, // Her bir kutunun yüksekliği sabit 120 olacak
+            crossAxisCount: mySize, // Sütun sayımız sabit 2 olacak
+            mainAxisExtent: 240, // Her bir kutunun yüksekliği sabit 120 olacak
             crossAxisSpacing:
                 8, // Yan yana bulunan iki kutunun arasındaki boşluk sabit 8 olacak
             mainAxisSpacing:
                 8, // Alt alta gelen iki kutunun arasındaki boşluk sabit 8 olacak
           ),
 
-          itemCount: 20, // 10 adet item olacak
+          itemCount: 6,
           itemBuilder: (context, index) {
             final app = myAppList[index];
 
@@ -80,7 +95,8 @@ class _MyGridViewState extends State<MyGridView> {
 
                 CupertinoContextMenuAction(
                   onPressed: () {
-                    _launchUrl();
+                    final Uri _url = Uri.parse('${app.storeUrl}');
+                    _launchUrl(_url);
                   },
                   isDefaultAction: true,
                   trailingIcon: CupertinoIcons.shopping_cart,
@@ -88,16 +104,20 @@ class _MyGridViewState extends State<MyGridView> {
                 ),
 
                 CupertinoContextMenuAction(
-                  onPressed: () {},
+                  onPressed: () {
+                    _shareLink(app.storeUrl);
+                  },
                   isDefaultAction: true,
                   trailingIcon: CupertinoIcons.share,
                   child: const Text('Paylaş'),
                 ),
 
                 CupertinoContextMenuAction(
-                  onPressed: () {},
+                  onPressed: () {
+                    _changeSize();
+                  },
                   isDefaultAction: true,
-                  trailingIcon: CupertinoIcons.textformat_size,
+                  trailingIcon: CupertinoIcons.share,
                   child: const Text('Boyutu Değiştir'),
                 ),
 
@@ -125,7 +145,18 @@ class _MyGridViewState extends State<MyGridView> {
                   elevation: 1,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Text(app.appName), Text(app.appCategory)],
+                    children: [
+                      Image(
+                        image: NetworkImage(app.appCover),
+                        fit: BoxFit.cover,
+                        width: 160,
+                      ),
+
+                      SizedBox(height: 16),
+
+                      Text(app.appName),
+                      Text(app.appCategory),
+                    ],
                   ),
                 ),
               ),
