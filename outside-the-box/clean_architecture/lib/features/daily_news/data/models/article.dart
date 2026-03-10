@@ -10,10 +10,21 @@ class ArticleModel extends ArticleEntity {
     String? urlToImage,
     String? publishedAt,
     String? content,
-  });
+  }) : super(
+         // BU KISIM EKSİKTİ: Verileri Entity'ye paslıyoruz (Garip bir yöntem)
+         id: id,
+         author: author,
+         title: title,
+         description: description,
+         url: url,
+         urlToImage: urlToImage,
+         publishedAt: publishedAt,
+         content: content,
+       );
 
   factory ArticleModel.fromJson(Map<String, dynamic> map) {
     return ArticleModel(
+      // JSON anahtarlarının görseldekiyle (camelCase) aynı olduğundan emin ol
       author: map['author'] ?? "",
       title: map['title'] ?? "",
       description: map['description'] ?? "",
@@ -24,12 +35,3 @@ class ArticleModel extends ArticleEntity {
     );
   }
 }
-
-/*
-
-ArticleEntity'yi miras alan bir model oluşturduk. Böylece veri katmanıyla iş mantığı katmanını birbirinden ayırdık
-Eğer ayırmasak dış dünyadan entity katmanını dış dünyaya açık hale getirmiş olurduk.
-Domain katmanı tamamen bağımsız olmalı
-
-factory metodumuzla json verisini dart nesnesine dönüştürdük
-*/

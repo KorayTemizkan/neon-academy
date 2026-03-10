@@ -32,6 +32,8 @@ class NewsApiService {
             .map((json) => ArticleModel.fromJson(json))
             .toList();
 
+        print(articles);
+
         // Veriyi Repository katmanının beklediği formatta döndürüyoruz
         return Response(
           requestOptions: response.requestOptions,

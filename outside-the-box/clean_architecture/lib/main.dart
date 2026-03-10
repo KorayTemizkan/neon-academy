@@ -1,9 +1,15 @@
 import 'package:clean_architecture/config/theme/app_themes.dart';
+import 'package:clean_architecture/features/daily_news/presentation/bloc/article/remote/remote_article_bloc.dart';
+import 'package:clean_architecture/features/daily_news/presentation/bloc/article/remote/remote_article_event.dart';
 import 'package:clean_architecture/features/daily_news/presentation/pages/home/daily_news.dart';
 import 'package:clean_architecture/injection_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
+  // İlk başta bunu eklemediğimiz için siyah ekran geliyordu ve uygulama hiç başlatılamıyordu
+  // Bunun sayesinde Flutter motoru ile telefon donanımı arasında köprü kurulur
+  WidgetsFlutterBinding.ensureInitialized();
   initializeDependencies();
   runApp(const MyApp());
 }
@@ -13,10 +19,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: theme(),
-      home: const DailyNews(),
-    );
+    return BlocProvider<RemoteArticlesBloc>(
+      create: (context) => sl()..add(const GetArticles()),
+      child: MaterialApp(theme: theme(), home: const DailyNews()));
   }
 }
 
@@ -54,16 +59,43 @@ Kullanıcının gördüğü ve etkileşime girdiği katmandır.
 * **Presentation Logic Holders:** Senin kullandığın **Cubit**, Bloc veya ChangeNotifier buradadır. Use Case'den gelen veriyi alır ve UI'ın anlayacağı hale getirir.
 * **Widgets:** İlk görseldeki o meşhur **Widget Ağacı** buradadır. `Scaffold`, `AppBar`, `Text` gibi sadece görseli temsil eden bileşenler.
 
----
+! DAHA FAZLA AÇIKLAMA
 
-? Akış Nasıl İşler? (Call Flow)
+EN ALTTAN EN ÜSTE DOĞRU SIRASIYLA AÇIKLAYARAK GİDELİM
+clean_architecture/lib/features/daily_news -> bu konumdayız şu an
 
-Görseldeki sağ tarafta bulunan ok (Call Flow) yönüne bakarsan:
+YEREL/UZAK KATMAN
 
-1. **Widget** (Butona basılır) -> **Cubit**'e haber verir.
-2. **Cubit** -> İlgili **Use Case**'i çalıştırır.
-3. **Use Case** -> **Repository**'den veri ister.
-4. **Repository** -> Veri kaynağından (API/DB) veriyi alır ve **Entity** olarak geri döndürür.
-5. **Cubit** -> Gelen veriyi (State) **Widget**'a yansıtır ve ekran güncellenir.
+API: https://newsapi.org/v2/top-headlines?apiKey=ff957763c54c44d8b00e5e082bc76cb0&country=us&category=business
+
+VERİ KATMANI -> Dış dünya ile iletişim kurulan yerdir
+
+ DATA SOURCE:
+(/data/datasources/remote/news_api_service.dart) dosyasında Dio paketiyle apiye istek atılır, gelen ham JSON verisi ArticleModel listesine dönüştürülür
+MODEL:
+Veri modeli burada bulunur. ArticleEntity(iş mantığı katmanı)’den miras alır
+REPOSITORY(Implementation olan):
+news_api_service.dart kullanarak veriyi çeken yer burasıdır. Cevabın başarılı ya da başarısız olma durumuna göre DataSuccess ya da DataFailed sınıfları ile sarmalayıp bir üst katmana sunar
+
+İŞ MANTIĞI KATMANI -> Uygulamanın beynidir; ne API’yi ne de UI’ı tanır
+
+REPOSITORY(Interface):
+Veri katmanındaki repositorynin ne yapması gerektiğini söyleyen bir sözleşme “abstract class” dosyasıdır
+ENTITIES:
+Veri katmanındaki modelin iş mantığı katmanındaki hali.
+USE CASE:
+Uygulamanın yaptığı belirli bir işi temsil eder. Örneğin GetArticleUseCase ile sadece haberleri getir görevini yerine getiririz. Bloc doğrudan repository’yi değil bu UseCase’yi çağırır
+
+SUNUM KATMANI
+STATE MANAGEMENT:
+Durum yönetimi sistemi kurulur. Haberleri yükle gibi olayları alır, UseCase’yi çalıştırırır, ekrana “yükleniyor”, “tamamlandı” ya da “hata” gibi durumları gönderir.
+WIDGETS:
+Tekrar kullanılabilir arayüz araçları tanımlanır
+PAGES:
+Sayfalar tanımlanır
+
+TÜM AKIŞ
+
+Kullanıcı Sayfayı Açar → UI (DailyNews) → Bloc (Event) → UseCase → Repository (Interface) → Repository (Implementation) → NewsApiService (Dio) → News API (Remote) → Ham JSON Verisi <EN TEMEL NOKTA> ArticleModel (fromJson) → ArticleEntity → DataSuccess (Sarmalayıcı) → Repository (Implementation) → UseCase → Bloc (State) → UI (ListView/ArticleWidget)
 
 */

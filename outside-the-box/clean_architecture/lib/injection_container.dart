@@ -31,6 +31,7 @@ Projedeki tüm katmanları birbirine bağlayan kısımdayız.
 Bu sayede bir sınıfa ihtiyaç duyduğunda onu manuel olarak oluşturmakla uğraşmayız,
 
 registerSingleton uygulama boyunca nesnenin tek bir kopyasını oluşturur. ApiService ya da Repository gibi sürekli aynı kalması gereken yapılar içindir.
+registerLazySingleton uygulama boyunca nesnenin tek bir kopyasını oluşturur ama ögeye ihtiyaç olduğunda.
 registerFactory her çağrıldığında yeni bir kopya oluşturur. Cubit gibi her ekran açıldığında sıfırlanması gereken yapılar içindir.
 
 ! EXTERNAL           DATA                    DOMAİN            PRESENTATİON
