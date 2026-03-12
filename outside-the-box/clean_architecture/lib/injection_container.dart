@@ -12,17 +12,7 @@ Future<void> initializeDependencies() async {
   // Dio (Dış Paket)
   sl.registerSingleton<Dio>(Dio());
 
-  // API Service
-  sl.registerSingleton<NewsApiService>(NewsApiService(sl()));
-
-  // Repository
-  sl.registerSingleton<ArticleRepository>(ArticleRepositoryImpl(sl()));
-
-  // UseCase
-  sl.registerSingleton<GetArticleUseCase>(GetArticleUseCase(sl()));
-
-  // Bloc
-  sl.registerFactory<RemoteArticlesBloc>(() => RemoteArticlesBloc(sl()));
+  // API Servicz
 }
 
 /*

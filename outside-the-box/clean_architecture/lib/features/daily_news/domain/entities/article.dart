@@ -35,7 +35,8 @@ class ArticleEntity extends Equatable {
     ];
   }
 }
-
+// TODO TEST
+// ! WSDHFJYGKLUH
 /*
 Saf varlık buradadır.
 

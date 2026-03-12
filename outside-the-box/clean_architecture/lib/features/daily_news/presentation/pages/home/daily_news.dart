@@ -32,9 +32,7 @@ class DailyNews extends StatelessWidget {
           return ListView.builder(
             itemCount: state.articles!.length,
             itemBuilder: (context, index) {
-              return ArticleWidget(
-                article: state.articles![index],
-              );
+              return ArticleWidget(article: state.articles![index]);
             },
           );
         }

@@ -14,13 +14,15 @@ class _TipsPageState extends State<TipsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // Mesela başlıktaki TEXT widgetinin bir kere çizilmesi yeterli. Rebuild yaptırmamak için CONST ekle
-      appBar: AppBar(title: const Text('TipsPage'),backgroundColor: Colors.blue,),
-   
+      appBar: AppBar(
+        title: const Text('TipsPage'),
+        backgroundColor: Colors.blue,
+      ),
+
       body: Column(
         children: [
           Text('test', style: context.textTheme.displayLarge),
 
-          
           /*
 
           Zaten clean architecturede böyle yapmıyorum ama yine de not alayım,
@@ -39,10 +41,12 @@ class _TipsPageState extends State<TipsPage> {
             ),
           ),
           */
-
           MyCardWidget(),
-
-
+          Image(
+            image: NetworkImage(
+              'https://framerusercontent.com/images/DQv3U0KZp1tV0pVn1i2LQUDKkOM.png',
+            ),
+          ),
         ],
       ),
     );
