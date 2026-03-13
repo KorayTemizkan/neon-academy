@@ -10,3 +10,5 @@ extension ThemeHelper on BuildContext {
   TextTheme get textTheme => theme.textTheme;
   ColorScheme get colorScheme => theme.colorScheme;
 }
+
+// Extension ve themeData kullanarak uygulama geneli renk kontrolü yaptık 
