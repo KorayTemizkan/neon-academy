@@ -3,11 +3,14 @@ import 'package:_get_it/user_service.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  // Stateless widget olunca servisi doğruca değişken gibi widget üstünde tanımlayabiliriz
+  // Ama tabii ki bir state management yöntemiyle ve clean architecture mimarisiyle başka yapılıyor. Burası en basit test ortamı.
+  final userService = sl<UserService>();
 
   @override
   Widget build(BuildContext context) {
-    final userService = sl<UserService>();
     return Scaffold(
       appBar: AppBar(
         title: Text('GetIt', style: TextStyle(color: Colors.white)),

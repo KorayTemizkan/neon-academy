@@ -18,6 +18,7 @@ class HomePage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
+              // pushRoute auto_route'un bir fonksiyonu, normallerle karıştırma
               onPressed: () => context.pushRoute(const DetailRoute()),
               child: Text('DetailPage'),
             ),

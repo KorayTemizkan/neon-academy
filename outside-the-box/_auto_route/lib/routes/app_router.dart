@@ -7,17 +7,18 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
     // Ana Sayfa
     AutoRoute(page: HomeRoute.page, initial: true),
+    // Detay sayfası
     AutoRoute(page: DetailRoute.page),
   ];
 }
 
 /*
 
-go_router paketinin en güçlü alternatifidir.
+?go_router paketinin en güçlü alternatifidir.
 
 her sayfanın başına @RoutePage ekle ve bu sayfayı bir rotaya dönüştür
 genel router sayfanı yukarıdaki gibi yaz. Merkez yönlendirmeyi ayarla.
-dart run build_runner build ile manuel yönlendirme zahmetinden kurtulduk
+"dart run build_runner build" kullanarak ise manuel yönlendirme zahmetinden kurtulduk
 main dosyasına:
 
 return MaterialApp.router(
@@ -25,4 +26,8 @@ return MaterialApp.router(
     );
 
 yaz
+
+
+! Yeni bir sayfa eklediğinde ya da rotada değişiklik yaptığında build_runner'ı tekrar çalıştırmayı unutma
+dart run build_runner watch --delete-conflicting-outputs -> bunu yazarsan senin yerine bu yapıyormuş tercih senin
 */

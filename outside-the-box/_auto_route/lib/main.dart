@@ -1,4 +1,3 @@
-import 'package:_auto_route/HomePage.dart';
 import 'package:_auto_route/routes/app_router.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +12,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Normalde MaterialApp içinde açardın ama router tanımlamak istersen bu şekilde MaterialApp.router ile açıyorsun
     return MaterialApp.router(
+      // router ayarını yukarıda oluşturduğumuz router nesnesinden çağırıyoruz
       routerConfig: _appRouter.config(),
     );
   }
